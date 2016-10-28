@@ -3,12 +3,13 @@
 
 #include "stm32l1xx.h"
 
-extern volatile uint16_t value;			//value from ADC
+extern volatile uint16_t value;
+uint16_t Input;
+//value from ADC
 
 char send[16];
 
 void initAdcIrq(void);
-void delayLed(uint32_t value);
 void usart_init(void);
 void ADC1_IRQHandler(void);
 void USART_IRQ_init(void);
@@ -16,8 +17,15 @@ void initLed(void);
 void adcInit(void);
 void USART2_IRQHandler(void);
 void sendData(char send[]);
+void USART2_IRQHandler(void);
 
-int i;
-int value_AD;
+
+char res[10];
+char format;
+
+int u;
+int odchylka;
+int v;
+int status;
 
 #endif

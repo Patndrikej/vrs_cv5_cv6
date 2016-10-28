@@ -83,14 +83,49 @@ void ADC1_IRQHandler(void)
 }
 
 
-void delayLed(uint32_t value)
-{
+void USART2_IRQHandler(void){
+	if(USART_GetITStatus(USART2, USART_IT_RXNE) != RESET){
+		USART_ClearITPendingBit(USART2, USART_IT_RXNE);
+		Input = USART_ReceiveData(USART2);
 
-	uint32_t i=0;
-	for (i = 0; i <= value; i++)
-		{
-		}
+    }
 }
+
+void frekvencie()
+{
+	v = 50000;
+
+	if(( value < 3655 + odchylka) && ( value > 3655 - odchylka )) {
+			  v = 50000;
+
+		  }else if(( value < 3459 + odchylka ) && ( value > 3459 - odchylka )) {
+			  v = 100000;
+
+		  }else if(( value < 2914 + odchylka  ) && ( value > 2914 - odchylka )) {
+			  v = 150000;
+
+		  }else if(( value < 2507 + odchylka  ) && ( value > 2007 - odchylka )) {
+			  v = 200000;
+
+		  }else if(( value < 2070 + odchylka ) && ( value > 3240 - odchylka )) {
+			  v = 250000;
+
+		  }else if(( value < 1700 + odchylka  ) && ( value > 1700 - odchylka )) {
+			  v = 300000;
+		  }
+
+		  GPIO_SetBits(GPIOA, GPIO_Pin_5);
+		  delay_for_led(v);
+
+		  GPIO_ResetBits(GPIOA, GPIO_Pin_5);
+		  delay_for_led(v);
+
+}
+
+void delay_for_led(int value_frek){
+	for(int j=0;j<=value;j++){}
+}
+
 
 void usart_init()
 {
@@ -113,6 +148,7 @@ void usart_init()
 
 		USART_InitTypeDef USART_InitStructure;
 		USART_InitStructure.USART_BaudRate = 9600;
+		//USART_InitStructure.USART_BaudRate = 9600*2;
 		USART_InitStructure.USART_WordLength = USART_WordLength_8b;
 		USART_InitStructure.USART_StopBits = USART_StopBits_1;
 		USART_InitStructure.USART_Parity = USART_Parity_No;
@@ -135,21 +171,19 @@ void usart_init()
 
 }
 
-void sendData(char send[])
-{
-	int j =0;
-
-	while(send[j] != 0)
+void sendData(char *res){
+	int index =0;
+	while(res[index] != '\0')
 	{
-		USART_SendData(USART2, send[j]);
+		USART_SendData(USART2, res[index]);
 		while(USART_GetFlagStatus(USART2, USART_FLAG_TC) == RESET);
-		j++;
+		index++;
 	}
-
-	USART_SendData(USART2,'\r');
+	USART_SendData(USART2,' ');
 	while(USART_GetFlagStatus(USART2, USART_FLAG_TC) == RESET);
-
 }
+
+
 
 
 

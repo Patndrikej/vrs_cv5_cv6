@@ -9,19 +9,16 @@ int main(void) {
 	initAdcIrq();
 	initLed();
 	usart_init();
+	status=0;
 
-	i=0;
 
-	while (1){
 
-		delayLed(value);
-		GPIO_ToggleBits(GPIOA, GPIO_Pin_5);
+	  while(1){
 
-		sprintf(send,"%d",value);
-		sendData(send);
 
-		i++;
+		  frekvencie();
+
+
+	  }
+	  return 0;
 	}
-
-	 return 0;
-}
