@@ -2,11 +2,11 @@
 
 volatile uint16_t value;			//value from ADC
 
-void initAdcIrq(void)
+void initAdcIrq(void) // Prerušenie z prevodníka
 {
 	NVIC_InitTypeDef NVIC_InitStruct;
 	NVIC_InitStruct.NVIC_IRQChannel = ADC1_IRQn;
-	NVIC_InitStruct.NVIC_IRQChannelPreemptionPriority = 1;
+	NVIC_InitStruct.NVIC_IRQChannelPreemptionPriority = 3;
 	NVIC_InitStruct.NVIC_IRQChannelSubPriority = 0;
 	NVIC_InitStruct.NVIC_IRQChannelCmd = ENABLE;
 	NVIC_Init(&NVIC_InitStruct);
@@ -15,7 +15,8 @@ void initAdcIrq(void)
 	ADC_ITConfig(ADC1, ADC_IT_OVR, ENABLE);
 }
 
-void initLed(void)
+
+void initLed(void) //inicializácia LED diódy
 {
 	RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOA, ENABLE);
 	GPIO_InitTypeDef      GPIO_InitStructure;
@@ -27,11 +28,9 @@ void initLed(void)
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_40MHz;
 	GPIO_Init(GPIOA, &GPIO_InitStructure);
 
-	//GPIO_SetBits(GPIOA, GPIO_Pin_5);
-
 }
 
-void adcInit(void)
+void adcInit(void) // nastavenie periférií
 {
   GPIO_InitTypeDef      GPIO_InitStructure;
   ADC_InitTypeDef       ADC_InitStructure;
@@ -86,12 +85,12 @@ void ADC1_IRQHandler(void)
 void USART2_IRQHandler(void){
 	if(USART_GetITStatus(USART2, USART_IT_RXNE) != RESET){
 		USART_ClearITPendingBit(USART2, USART_IT_RXNE);
-		Input = USART_ReceiveData(USART2);
+		Input = USART_ReceiveData(USART2); // set Input
 
     }
 }
 
-void frekvencie()
+void frekvencie() // Prerobené cvièenie 4
 {
 	v = 50000;
 
@@ -122,7 +121,7 @@ void frekvencie()
 
 }
 
-void delay_for_led(int value_frek){
+void delay_for_led(int value_frek){ // Delay
 	for(int j=0;j<=value;j++){}
 }
 
@@ -136,6 +135,7 @@ void usart_init()
 
 		GPIO_InitTypeDef GPIO_usrt;
 
+		//Set GPIO pre TX a RX
 		GPIO_usrt.GPIO_Pin = GPIO_Pin_2 | GPIO_Pin_3;
 		GPIO_usrt.GPIO_Mode = GPIO_Mode_AF;
 		GPIO_usrt.GPIO_OType = GPIO_OType_PP;
@@ -146,6 +146,7 @@ void usart_init()
 
 		RCC_APB1PeriphClockCmd(RCC_APB1Periph_USART2, ENABLE);
 
+		//Nastavenie USART2
 		USART_InitTypeDef USART_InitStructure;
 		USART_InitStructure.USART_BaudRate = 9600;
 		//USART_InitStructure.USART_BaudRate = 9600*2;
@@ -171,7 +172,7 @@ void usart_init()
 
 }
 
-void sendData(char *res){
+void sendData(char *res){ // Posielanie dát
 	int index =0;
 	while(res[index] != '\0')
 	{
